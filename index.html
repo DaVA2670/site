@@ -722,6 +722,18 @@
                     <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
                 </linearGradient>
 
+                <!-- Corner fades — linear, follow the eye taper naturally -->
+                <linearGradient id="cornerFL" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"   stop-color="rgba(0,0,0,.92)"/>
+                    <stop offset="55%"  stop-color="rgba(0,0,0,.30)"/>
+                    <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+                </linearGradient>
+                <linearGradient id="cornerFR" x1="100%" y1="0%" x2="0%" y2="0%">
+                    <stop offset="0%"   stop-color="rgba(0,0,0,.92)"/>
+                    <stop offset="55%"  stop-color="rgba(0,0,0,.30)"/>
+                    <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+                </linearGradient>
+
                 <!-- ══ CLIP PATHS ════════════════════════════════════════ -->
 
                 <!-- Outer eye shape — clips EVERYTHING including sclera fill -->
@@ -946,9 +958,9 @@
                 </g>
                 <!-- ═══════════════════════════════════════════════════════════ -->
 
-                <!-- Corner shadows (left/right extremes of almond) -->
-                <ellipse cx="12"  cy="112" rx="58" ry="36" fill="rgba(0,0,0,.62)"/>
-                <ellipse cx="368" cy="112" rx="58" ry="36" fill="rgba(0,0,0,.62)"/>
+                <!-- Corner fades — rects clipped to eye shape, gradient left→right/right→left -->
+                <rect x="-30" y="-30" width="145" height="284" fill="url(#cornerFL)"/>
+                <rect x="265" y="-30" width="145" height="284" fill="url(#cornerFR)"/>
 
                 <!-- Eyelid shadows (upper heavier, lower lighter) -->
                 <path d="M12,112 C60,38 138,14 190,14 C242,14 320,38 368,112 L368,-14 L12,-14 Z"
