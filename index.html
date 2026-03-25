@@ -635,161 +635,229 @@
         <div class="eye-aura"></div>
         <svg class="eye-svg" id="eyeSvg" viewBox="0 0 380 224" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <!-- Sunset gradient for city sky -->
-                <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%"   stop-color="#130820"/>
-                    <stop offset="25%"  stop-color="#2E0F2A"/>
-                    <stop offset="55%"  stop-color="#7A2800"/>
-                    <stop offset="80%"  stop-color="#C45A00"/>
-                    <stop offset="100%" stop-color="#D4893A"/>
-                </linearGradient>
-                <!-- Iris gradient -->
-                <radialGradient id="irisG" cx="50%" cy="45%" r="55%">
-                    <stop offset="0%"   stop-color="#6B4500"/>
-                    <stop offset="35%"  stop-color="#A06C1A"/>
-                    <stop offset="68%"  stop-color="#C9A96E"/>
-                    <stop offset="100%" stop-color="#2A1400"/>
+                <!-- ══ FILTERS ══════════════════════════════════════════ -->
+
+                <!-- Organic fiber displacement — makes straight lines wavy like real iris -->
+                <filter id="fiberWarp" x="-18%" y="-18%" width="136%" height="136%" color-interpolation-filters="sRGB">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.038 0.22" numOctaves="5" seed="9" result="noise"/>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+                </filter>
+
+                <!-- Soft glow for amber halo -->
+                <filter id="amberBloom" x="-35%" y="-35%" width="170%" height="170%">
+                    <feGaussianBlur stdDeviation="6" result="blur"/>
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+
+                <!-- ══ GRADIENTS ════════════════════════════════════════ -->
+
+                <!-- Iris base: deep blue-gray, realistic human iris -->
+                <radialGradient id="irisBase" cx="50%" cy="44%" r="50%">
+                    <stop offset="0%"   stop-color="#0B1520"/>
+                    <stop offset="16%"  stop-color="#152C48"/>
+                    <stop offset="38%"  stop-color="#1E4A6E"/>
+                    <stop offset="60%"  stop-color="#285878"/>
+                    <stop offset="80%"  stop-color="#16354E"/>
+                    <stop offset="100%" stop-color="#030810"/>
                 </radialGradient>
-                <!-- Inner iris rim -->
-                <radialGradient id="irisRim" cx="50%" cy="30%" r="65%">
-                    <stop offset="0%"   stop-color="rgba(255,210,100,.22)"/>
+
+                <!-- Amber-orange inner halo ring (near pupil, like the reference) -->
+                <radialGradient id="amberHalo" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%"   stop-color="rgba(215,118,12,1)"/>
+                    <stop offset="14%"  stop-color="rgba(195,95,8,.92)"/>
+                    <stop offset="32%"  stop-color="rgba(155,68,4,.7)"/>
+                    <stop offset="52%"  stop-color="rgba(100,42,2,.38)"/>
+                    <stop offset="72%"  stop-color="rgba(55,20,1,.12)"/>
                     <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
                 </radialGradient>
-                <!-- Pupil clip (follows eyeball) -->
-                <clipPath id="pupilClip">
-                    <circle id="pcCirc" cx="190" cy="112" r="38"/>
-                </clipPath>
-                <!-- Iris clip -->
-                <clipPath id="irisClip">
-                    <circle id="icCirc" cx="190" cy="112" r="64"/>
-                </clipPath>
-                <!-- Full eye shape clip -->
+
+                <!-- Top-left directional light on iris (gives 3-D depth) -->
+                <radialGradient id="irisLight" cx="32%" cy="28%" r="60%">
+                    <stop offset="0%"   stop-color="rgba(100,165,220,.28)"/>
+                    <stop offset="45%"  stop-color="rgba(60,110,165,.08)"/>
+                    <stop offset="100%" stop-color="rgba(0,0,0,.18)"/>
+                </radialGradient>
+
+                <!-- Sunset sky for city reflection -->
+                <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%"   stop-color="#07031A"/>
+                    <stop offset="18%"  stop-color="#1A0820"/>
+                    <stop offset="48%"  stop-color="#6C1C00"/>
+                    <stop offset="74%"  stop-color="#BF4E00"/>
+                    <stop offset="100%" stop-color="#C86C18"/>
+                </linearGradient>
+
+                <!-- Eyelid cast shadows -->
+                <linearGradient id="topLidG" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%"   stop-color="rgba(0,0,0,.78)"/>
+                    <stop offset="60%"  stop-color="rgba(0,0,0,.22)"/>
+                    <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+                </linearGradient>
+                <linearGradient id="botLidG" x1="0%" y1="100%" x2="0%" y2="0%">
+                    <stop offset="0%"   stop-color="rgba(0,0,0,.55)"/>
+                    <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+                </linearGradient>
+
+                <!-- ══ CLIP PATHS ════════════════════════════════════════ -->
+
+                <!-- Outer eye shape — clips EVERYTHING including sclera fill -->
                 <clipPath id="eyeClip">
                     <path d="M12,112 C60,38 138,14 190,14 C242,14 320,38 368,112 C320,186 242,210 190,210 C138,210 60,186 12,112 Z"/>
                 </clipPath>
-                <!-- Subtle iris depth shadow — replaces heavy glow filter -->
-                <filter id="irisDepth" x="-10%" y="-10%" width="120%" height="120%">
-                    <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#1a0800" flood-opacity="0.5"/>
-                </filter>
-                <!-- Soft shadow at eye corners — neutral, works in both themes -->
-                <radialGradient id="cornerL" cx="0%" cy="50%" r="60%">
-                    <stop offset="0%" stop-color="rgba(0,0,0,.42)"/>
-                    <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-                </radialGradient>
-                <radialGradient id="cornerR" cx="100%" cy="50%" r="60%">
-                    <stop offset="0%" stop-color="rgba(0,0,0,.42)"/>
-                    <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-                </radialGradient>
-                <!-- Eyelid shadow gradients — fade in/out naturally in both themes -->
-                <linearGradient id="lidTopG" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%"   stop-color="rgba(0,0,0,.58)"/>
-                    <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-                </linearGradient>
-                <linearGradient id="lidBotG" x1="0%" y1="100%" x2="0%" y2="0%">
-                    <stop offset="0%"   stop-color="rgba(0,0,0,.42)"/>
-                    <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-                </linearGradient>
+                <!-- Iris circle (local to eyeball group) -->
+                <clipPath id="irisClip">
+                    <circle cx="190" cy="112" r="70"/>
+                </clipPath>
+                <!-- Pupil circle (local to eyeball group) -->
+                <clipPath id="pupilClip">
+                    <circle cx="190" cy="112" r="40"/>
+                </clipPath>
             </defs>
 
-            <!-- White of eye (sclera) — clipped to eye shape -->
+            <!-- ── All content clipped to the almond eye shape ───────── -->
             <g clip-path="url(#eyeClip)">
-                <path d="M12,112 C60,38 138,14 190,14 C242,14 320,38 368,112 C320,186 242,210 190,210 C138,210 60,186 12,112 Z"
-                      fill="#DDD8CC"/>
 
-                <!-- Eyeball group — this entire group translates -->
-                <g id="eyeball">
-                    <!-- Iris -->
-                    <circle cx="190" cy="112" r="64" fill="url(#irisG)" filter="url(#irisDepth)"/>
+                <!-- SCLERA: oversized rect — no gaps no matter how far eyeball moves -->
+                <rect x="-30" y="-30" width="440" height="284" fill="#DEDAD2"/>
 
-                    <!-- Iris fiber lines -->
-                    <g clip-path="url(#irisClip)" opacity=".38">
-                        <line x1="190" y1="48"  x2="190" y2="176" stroke="#D4A04A" stroke-width=".6"/>
-                        <line x1="126" y1="80"  x2="254" y2="144" stroke="#D4A04A" stroke-width=".6"/>
-                        <line x1="126" y1="144" x2="254" y2="80"  stroke="#D4A04A" stroke-width=".6"/>
-                        <line x1="148" y1="52"  x2="232" y2="172" stroke="#D4A04A" stroke-width=".35"/>
-                        <line x1="232" y1="52"  x2="148" y2="172" stroke="#D4A04A" stroke-width=".35"/>
-                        <line x1="126" y1="112" x2="254" y2="112" stroke="#D4A04A" stroke-width=".4"/>
-                        <!-- Concentric rings -->
-                        <circle cx="190" cy="112" r="30" fill="none" stroke="#D4A04A" stroke-width=".4" opacity=".5"/>
-                        <circle cx="190" cy="112" r="50" fill="none" stroke="#D4A04A" stroke-width=".35" opacity=".35"/>
-                    </g>
-
-                    <!-- Iris highlight overlay -->
-                    <circle cx="190" cy="112" r="64" fill="url(#irisRim)" clip-path="url(#irisClip)"/>
-
-                    <!-- Pupil base (black) -->
-                    <circle cx="190" cy="112" r="40" fill="#000"/>
-
-                    <!-- City skyline inside pupil -->
-                    <g clip-path="url(#pupilClip)">
-                        <!-- Sky -->
-                        <rect x="152" y="74" width="76" height="76" fill="url(#skyGrad)"/>
-
-                        <!-- Horizon glow -->
-                        <ellipse cx="190" cy="146" rx="38" ry="6" fill="rgba(200,100,0,.35)"/>
-
-                        <!-- Buildings — varied heights -->
-                        <rect x="152" y="130" width="7"  height="20" fill="#050210"/>
-                        <rect x="159" y="122" width="5"  height="28" fill="#050210"/>
-                        <rect x="164" y="117" width="8"  height="33" fill="#040109"/>
-                        <rect x="172" y="125" width="4"  height="25" fill="#050210"/>
-                        <!-- Tallest central tower -->
-                        <rect x="176" y="100" width="7"  height="50" fill="#020007"/>
-                        <!-- Antenna -->
-                        <rect x="179" y="92"  width="1"  height="8"  fill="#020007"/>
-                        <rect x="184" y="108" width="6"  height="42" fill="#060212"/>
-                        <rect x="190" y="114" width="5"  height="36" fill="#050210"/>
-                        <rect x="195" y="120" width="7"  height="30" fill="#040109"/>
-                        <rect x="202" y="118" width="5"  height="32" fill="#050210"/>
-                        <rect x="207" y="126" width="8"  height="24" fill="#060212"/>
-                        <rect x="215" y="132" width="6"  height="18" fill="#050210"/>
-                        <rect x="221" y="128" width="7"  height="22" fill="#040109"/>
-
-                        <!-- Window lights -->
-                        <rect x="177" y="104" width="2" height="2" fill="rgba(255,220,80,.9)"/>
-                        <rect x="177" y="110" width="2" height="2" fill="rgba(255,220,80,.7)"/>
-                        <rect x="177" y="116" width="2" height="2" fill="rgba(255,220,80,.5)"/>
-                        <rect x="185" y="110" width="2" height="2" fill="rgba(255,220,80,.8)"/>
-                        <rect x="185" y="118" width="2" height="2" fill="rgba(255,220,80,.6)"/>
-                        <rect x="196" y="116" width="2" height="2" fill="rgba(255,220,80,.7)"/>
-                        <rect x="203" y="120" width="2" height="2" fill="rgba(255,220,80,.6)"/>
-                        <rect x="165" y="119" width="2" height="2" fill="rgba(255,220,80,.7)"/>
-                        <rect x="160" y="124" width="2" height="2" fill="rgba(255,220,80,.5)"/>
-                        <rect x="208" y="128" width="2" height="2" fill="rgba(255,220,80,.6)"/>
-
-                        <!-- Water reflection at bottom -->
-                        <rect x="152" y="144" width="76" height="6" fill="rgba(190,110,20,.18)"/>
-                    </g>
-
-                    <!-- Pupil deep center -->
-                    <circle cx="190" cy="112" r="22" fill="#000" opacity=".88"/>
-
-                    <!-- Eye shine (primary) -->
-                    <ellipse cx="172" cy="94" rx="9" ry="5.5" fill="rgba(255,255,255,.14)"/>
-                    <ellipse cx="169" cy="92" rx="3.5" ry="2"  fill="rgba(255,255,255,.36)"/>
-                    <!-- Eye shine (secondary, small) -->
-                    <circle  cx="206" cy="126" r="2.5"         fill="rgba(255,255,255,.09)"/>
+                <!-- Subtle blood vessels (left and right, near corners) -->
+                <g stroke="#C07272" fill="none" opacity=".13">
+                    <path d="M14,112 C32,96 56,106 80,109" stroke-width="1"/>
+                    <path d="M18,121 C38,113 60,118 78,122" stroke-width=".65"/>
+                    <path d="M22,103 C46,93 68,103 84,108" stroke-width=".5"/>
+                    <path d="M28,128 C50,120 70,126 85,128" stroke-width=".4"/>
+                    <path d="M366,112 C348,96 324,106 300,109" stroke-width="1"/>
+                    <path d="M362,121 C342,113 320,118 302,122" stroke-width=".65"/>
+                    <path d="M358,103 C334,93 312,103 296,108" stroke-width=".5"/>
+                    <path d="M352,128 C330,120 310,126 295,128" stroke-width=".4"/>
                 </g>
 
-                <!-- Corner depth shadows -->
-                <rect x="0"   y="0" width="110" height="224" fill="url(#cornerL)"/>
-                <rect x="270" y="0" width="110" height="224" fill="url(#cornerR)"/>
+                <!-- Sclera shadow near iris edge (realistic depth) -->
+                <circle cx="190" cy="112" r="82" fill="rgba(0,0,0,.14)"/>
+                <circle cx="190" cy="112" r="74" fill="rgba(0,0,0,.07)"/>
 
-                <!-- Eyelid shadow overlays — gradient, not solid black -->
-                <path id="lidTop"
-                      d="M12,112 C60,38 138,14 190,14 C242,14 320,38 368,112 L368,-10 L12,-10 Z"
-                      fill="url(#lidTopG)"/>
-                <path id="lidBot"
-                      d="M12,112 C60,186 138,210 190,210 C242,210 320,186 368,112 L368,234 L12,234 Z"
-                      fill="url(#lidBotG)"/>
+                <!-- ═══════════ EYEBALL GROUP (translates on look) ════════════ -->
+                <g id="eyeball">
+
+                    <!-- Iris base colour (blue-grey) -->
+                    <circle cx="190" cy="112" r="70" fill="url(#irisBase)"/>
+
+                    <!-- Iris fibers — JS injects lines here then warp filter makes them organic -->
+                    <g id="irisGroup" clip-path="url(#irisClip)" filter="url(#fiberWarp)"/>
+
+                    <!-- Directional light overlay — gives 3-D convex look -->
+                    <circle cx="190" cy="112" r="70" fill="url(#irisLight)" clip-path="url(#irisClip)"/>
+
+                    <!-- Amber inner halo (most prominent feature from the reference) -->
+                    <circle cx="190" cy="112" r="54"
+                            fill="url(#amberHalo)"
+                            clip-path="url(#irisClip)"
+                            filter="url(#amberBloom)"/>
+
+                    <!-- Collarette: subtle brighter annular ridge -->
+                    <circle cx="190" cy="112" r="47" fill="none"
+                            stroke="rgba(200,118,18,.45)" stroke-width="3"/>
+                    <circle cx="190" cy="112" r="45" fill="none"
+                            stroke="rgba(200,118,18,.18)" stroke-width="1.5"/>
+
+                    <!-- Limbal ring: very dark outer iris border — critical for realism -->
+                    <circle cx="190" cy="112" r="70" fill="none"
+                            stroke="rgba(2,4,10,.95)" stroke-width="11"/>
+                    <circle cx="190" cy="112" r="63" fill="none"
+                            stroke="rgba(2,4,10,.30)" stroke-width="5"/>
+
+                    <!-- PUPIL (deep black) -->
+                    <circle cx="190" cy="112" r="40" fill="#010208"/>
+
+                    <!-- ── City skyline in pupil reflection ──────────── -->
+                    <g clip-path="url(#pupilClip)">
+                        <!-- Sky -->
+                        <rect x="150" y="72" width="80" height="80" fill="url(#skyGrad)"/>
+                        <!-- Horizon glow band -->
+                        <ellipse cx="190" cy="148" rx="40" ry="7" fill="rgba(210,88,0,.52)"/>
+                        <!-- Sun disc -->
+                        <circle  cx="190" cy="140" r="5"   fill="rgba(255,185,30,.75)"/>
+                        <circle  cx="190" cy="140" r="2.5" fill="rgba(255,230,90,.95)"/>
+                        <!-- Left cluster -->
+                        <rect x="150" y="127" width="7"  height="25" fill="#030010"/>
+                        <rect x="157" y="119" width="5"  height="33" fill="#030010"/>
+                        <rect x="162" y="114" width="8"  height="38" fill="#020008"/>
+                        <rect x="170" y="121" width="4"  height="31" fill="#030010"/>
+                        <!-- Central skyscraper (tallest) -->
+                        <rect x="174" y="94"  width="8"  height="58" fill="#010007"/>
+                        <rect x="177" y="87"  width="2"  height="7"  fill="#010007"/>
+                        <!-- Right cluster -->
+                        <rect x="182" y="103" width="7"  height="49" fill="#020010"/>
+                        <rect x="189" y="110" width="6"  height="42" fill="#030010"/>
+                        <rect x="195" y="114" width="7"  height="38" fill="#020008"/>
+                        <rect x="202" y="118" width="6"  height="34" fill="#030010"/>
+                        <rect x="208" y="124" width="7"  height="28" fill="#020010"/>
+                        <rect x="215" y="130" width="6"  height="22" fill="#030010"/>
+                        <rect x="221" y="126" width="9"  height="26" fill="#020008"/>
+                        <!-- Window lights -->
+                        <rect x="175" y="97"  width="2" height="2" fill="rgba(255,215,55,1)"/>
+                        <rect x="175" y="103" width="2" height="2" fill="rgba(255,215,55,.85)"/>
+                        <rect x="175" y="109" width="2" height="2" fill="rgba(255,215,55,.7)"/>
+                        <rect x="175" y="115" width="2" height="2" fill="rgba(255,215,55,.55)"/>
+                        <rect x="183" y="105" width="2" height="2" fill="rgba(255,215,55,.9)"/>
+                        <rect x="183" y="113" width="2" height="2" fill="rgba(255,215,55,.7)"/>
+                        <rect x="190" y="112" width="2" height="2" fill="rgba(255,215,55,.75)"/>
+                        <rect x="196" y="116" width="2" height="2" fill="rgba(255,215,55,.65)"/>
+                        <rect x="163" y="116" width="2" height="2" fill="rgba(255,215,55,.8)"/>
+                        <rect x="158" y="121" width="2" height="2" fill="rgba(255,215,55,.6)"/>
+                        <rect x="209" y="126" width="2" height="2" fill="rgba(255,215,55,.65)"/>
+                        <rect x="222" y="128" width="2" height="2" fill="rgba(255,215,55,.6)"/>
+                        <!-- Ground reflection shimmer -->
+                        <rect x="150" y="147" width="80" height="5" fill="rgba(180,75,5,.3)"/>
+                    </g>
+
+                    <!-- Pupil centre (extra depth) -->
+                    <circle cx="190" cy="112" r="20" fill="#000"/>
+
+                    <!-- Upper eyelid cast shadow across iris (makes eye look recessed) -->
+                    <rect x="118" y="42" width="144" height="54"
+                          fill="rgba(0,0,0,.40)"
+                          clip-path="url(#irisClip)"/>
+
+                    <!-- ── Corneal reflections (most important for "alive" feel) ──── -->
+                    <!-- Large diffuse reflection (lens glare) -->
+                    <ellipse cx="170" cy="88"  rx="16" ry="8.5"
+                             fill="rgba(255,255,255,.18)"
+                             transform="rotate(-24 170 88)"/>
+                    <!-- Bright core of reflection -->
+                    <ellipse cx="166" cy="85"  rx="6.5" ry="3.2"
+                             fill="rgba(255,255,255,.52)"
+                             transform="rotate(-24 166 85)"/>
+                    <!-- Tiny specular point (the "life" in the eye) -->
+                    <ellipse cx="163" cy="83"  rx="2.8" ry="1.6"
+                             fill="rgba(255,255,255,.88)"
+                             transform="rotate(-24 163 83)"/>
+                    <!-- Curved rim reflection (secondary glint) -->
+                    <path d="M160,83 Q174,78 188,84"
+                          stroke="rgba(255,255,255,.16)" stroke-width="2.2"
+                          fill="none" stroke-linecap="round"/>
+                    <!-- Small lower-right secondary reflection -->
+                    <circle cx="213" cy="131" r="3" fill="rgba(255,255,255,.09)"/>
+
+                </g>
+                <!-- ═══════════════════════════════════════════════════════════ -->
+
+                <!-- Corner shadows (left/right extremes of almond) -->
+                <ellipse cx="12"  cy="112" rx="58" ry="36" fill="rgba(0,0,0,.62)"/>
+                <ellipse cx="368" cy="112" rx="58" ry="36" fill="rgba(0,0,0,.62)"/>
+
+                <!-- Eyelid shadows (upper heavier, lower lighter) -->
+                <path d="M12,112 C60,38 138,14 190,14 C242,14 320,38 368,112 L368,-14 L12,-14 Z"
+                      fill="url(#topLidG)"/>
+                <path d="M12,112 C60,186 138,210 190,210 C242,210 320,186 368,112 L368,234 L12,234 Z"
+                      fill="url(#botLidG)"/>
             </g>
 
-            <!-- Eye outline (sits on top, not clipped) -->
+            <!-- Eye outline on top (gold rim) -->
             <path d="M12,112 C60,38 138,14 190,14 C242,14 320,38 368,112 C320,186 242,210 190,210 C138,210 60,186 12,112 Z"
-                  fill="none" stroke="rgba(201,169,110,.35)" stroke-width="1.5"/>
-            <!-- Inner subtle rim -->
+                  fill="none" stroke="rgba(201,169,110,.32)" stroke-width="1.5"/>
             <path d="M12,112 C60,38 138,14 190,14 C242,14 320,38 368,112 C320,186 242,210 190,210 C138,210 60,186 12,112 Z"
-                  fill="none" stroke="rgba(201,169,110,.12)" stroke-width="3"/>
+                  fill="none" stroke="rgba(201,169,110,.08)" stroke-width="4"/>
         </svg>
     </div>
 
@@ -1103,9 +1171,8 @@ eyeWrap.addEventListener('mousemove', e => {
 function tickEye() {
     cx += (tx - cx) * .055;
     cy += (ty - cy) * .055;
-    // Only move the eyeball group — clip paths (pcCirc, icCirc) are used
-    // INSIDE the eyeball group and are already in its local coordinate space,
-    // so they must NOT be offset separately (doing so caused double-shift artifacts).
+    // Translate only the eyeball group. Clip paths are defined in the eyeball's
+    // local coordinate space so they follow automatically — no separate update needed.
     eyeball.setAttribute('transform', `translate(${cx},${cy})`);
     requestAnimationFrame(tickEye);
 }
@@ -1154,6 +1221,76 @@ themeBtn.addEventListener('click', () => {
     body.classList.toggle('light');
     localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
 });
+
+/* ─── Iris fiber generation ───────────────────────────── */
+(function buildIris() {
+    const ns  = 'http://www.w3.org/2000/svg';
+    const g   = document.getElementById('irisGroup');
+    const CX  = 190, CY = 112;
+
+    function ln(x1, y1, x2, y2, color, w) {
+        const el = document.createElementNS(ns, 'line');
+        el.setAttribute('x1', x1.toFixed(1)); el.setAttribute('y1', y1.toFixed(1));
+        el.setAttribute('x2', x2.toFixed(1)); el.setAttribute('y2', y2.toFixed(1));
+        el.setAttribute('stroke', color);
+        el.setAttribute('stroke-width', w.toFixed(2));
+        g.appendChild(el);
+    }
+
+    // ── Main fibers: full iris width ──────────────────────────
+    const N1 = 96;
+    for (let i = 0; i < N1; i++) {
+        const a   = (i / N1) * Math.PI * 2 + (Math.random() - .5) * .10;
+        const r1  = 42 + (Math.random() - .5) * 4;
+        const r2  = 67 + (Math.random() - .5) * 3;
+        const x1  = CX + Math.cos(a) * r1,  y1 = CY + Math.sin(a) * r1;
+        const x2  = CX + Math.cos(a) * r2,  y2 = CY + Math.sin(a) * r2;
+        // inner half → amber, outer half → blue-grey
+        const inner = r1 < 55;
+        const R = inner ? 155 + (Math.random()*55|0) : 50  + (Math.random()*45|0);
+        const G = inner ? 72  + (Math.random()*30|0) : 95  + (Math.random()*55|0);
+        const B = inner ? 6   + (Math.random()*12|0) : 145 + (Math.random()*55|0);
+        const A = (.20 + Math.random() * .42).toFixed(2);
+        ln(x1, y1, x2, y2, `rgba(${R},${G},${B},${A})`, .35 + Math.random() * .72);
+    }
+
+    // ── Crypts: slightly brighter prominent fibres ─────────────
+    const N2 = 22;
+    for (let i = 0; i < N2; i++) {
+        const a  = (i / N2) * Math.PI * 2 + (Math.random() - .5) * .22;
+        const r1 = 44 + Math.random() * 3,  r2 = 66 + Math.random() * 3;
+        const x1 = CX + Math.cos(a) * r1,   y1 = CY + Math.sin(a) * r1;
+        const x2 = CX + Math.cos(a) * r2,   y2 = CY + Math.sin(a) * r2;
+        ln(x1, y1, x2, y2,
+           `rgba(110,172,220,${(.38+Math.random()*.32).toFixed(2)})`,
+           .82 + Math.random() * .78);
+    }
+
+    // ── Fine outer ring fibres ─────────────────────────────────
+    const N3 = 48;
+    for (let i = 0; i < N3; i++) {
+        const a  = (i / N3) * Math.PI * 2 + (Math.random() - .5) * .13;
+        const r1 = 54 + Math.random() * 5,  r2 = 66 + Math.random() * 3;
+        const x1 = CX + Math.cos(a) * r1,   y1 = CY + Math.sin(a) * r1;
+        const x2 = CX + Math.cos(a) * r2,   y2 = CY + Math.sin(a) * r2;
+        ln(x1, y1, x2, y2,
+           `rgba(65,118,172,${(.18+Math.random()*.28).toFixed(2)})`,
+           .25 + Math.random() * .32);
+    }
+
+    // ── Inner amber ring fibres (dense, near pupil edge) ──────
+    const N4 = 60;
+    for (let i = 0; i < N4; i++) {
+        const a  = (i / N4) * Math.PI * 2 + (Math.random() - .5) * .08;
+        const r1 = 41 + Math.random() * 3,  r2 = 52 + Math.random() * 4;
+        const x1 = CX + Math.cos(a) * r1,   y1 = CY + Math.sin(a) * r1;
+        const x2 = CX + Math.cos(a) * r2,   y2 = CY + Math.sin(a) * r2;
+        const R  = 165 + (Math.random()*50|0), G = 78 + (Math.random()*28|0);
+        ln(x1, y1, x2, y2,
+           `rgba(${R},${G},5,${(.25+Math.random()*.38).toFixed(2)})`,
+           .3 + Math.random() * .45);
+    }
+})();
 
 /* ─── Init ────────────────────────────────────────────── */
 runSeq();
