@@ -678,14 +678,38 @@
                     <stop offset="100%" stop-color="rgba(0,0,0,.18)"/>
                 </radialGradient>
 
-                <!-- Sunset sky for city reflection -->
+                <!-- City sky — dark at top, deepens to rich sunset at base -->
                 <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%"   stop-color="#07031A"/>
-                    <stop offset="18%"  stop-color="#1A0820"/>
-                    <stop offset="48%"  stop-color="#6C1C00"/>
-                    <stop offset="74%"  stop-color="#BF4E00"/>
-                    <stop offset="100%" stop-color="#C86C18"/>
+                    <stop offset="0%"   stop-color="#020010"/>
+                    <stop offset="32%"  stop-color="#060318"/>
+                    <stop offset="62%"  stop-color="#120608"/>
+                    <stop offset="78%"  stop-color="#5A1A00"/>
+                    <stop offset="90%"  stop-color="#AA4400"/>
+                    <stop offset="100%" stop-color="#C86018"/>
                 </linearGradient>
+
+                <!-- Gold gradient for ГГ letters (metallic, top-lit) -->
+                <linearGradient id="goldLG" x1="190" y1="86" x2="190" y2="118"
+                                gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stop-color="#FFF0C0"/>
+                    <stop offset="20%"  stop-color="#E8C050"/>
+                    <stop offset="50%"  stop-color="#9A6C10"/>
+                    <stop offset="75%"  stop-color="#C49030"/>
+                    <stop offset="100%" stop-color="#F0D070"/>
+                </linearGradient>
+
+                <!-- Gold top-edge sheen (renders over main gold) -->
+                <linearGradient id="goldSheen" x1="190" y1="86" x2="190" y2="100"
+                                gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stop-color="rgba(255,248,200,.65)"/>
+                    <stop offset="100%" stop-color="rgba(255,248,200,0)"/>
+                </linearGradient>
+
+                <!-- Filter: soft glow around letters -->
+                <filter id="letterGlow" x="-40%" y="-40%" width="180%" height="180%">
+                    <feGaussianBlur stdDeviation="3.5" result="b"/>
+                    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
 
                 <!-- Eyelid cast shadows -->
                 <linearGradient id="topLidG" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -769,75 +793,155 @@
                     <!-- PUPIL (deep black) -->
                     <circle cx="190" cy="112" r="40" fill="#010208"/>
 
-                    <!-- ── City skyline in pupil reflection ──────────── -->
+                    <!-- ══ Pupil scene: city panorama + ГГ brand mark ══════ -->
                     <g clip-path="url(#pupilClip)">
-                        <!-- Sky -->
-                        <rect x="150" y="72" width="80" height="80" fill="url(#skyGrad)"/>
-                        <!-- Horizon glow band -->
-                        <ellipse cx="190" cy="148" rx="40" ry="7" fill="rgba(210,88,0,.52)"/>
-                        <!-- Sun disc -->
-                        <circle  cx="190" cy="140" r="5"   fill="rgba(255,185,30,.75)"/>
-                        <circle  cx="190" cy="140" r="2.5" fill="rgba(255,230,90,.95)"/>
-                        <!-- Left cluster -->
-                        <rect x="150" y="127" width="7"  height="25" fill="#030010"/>
-                        <rect x="157" y="119" width="5"  height="33" fill="#030010"/>
-                        <rect x="162" y="114" width="8"  height="38" fill="#020008"/>
-                        <rect x="170" y="121" width="4"  height="31" fill="#030010"/>
-                        <!-- Central skyscraper (tallest) -->
-                        <rect x="174" y="94"  width="8"  height="58" fill="#010007"/>
-                        <rect x="177" y="87"  width="2"  height="7"  fill="#010007"/>
-                        <!-- Right cluster -->
-                        <rect x="182" y="103" width="7"  height="49" fill="#020010"/>
-                        <rect x="189" y="110" width="6"  height="42" fill="#030010"/>
-                        <rect x="195" y="114" width="7"  height="38" fill="#020008"/>
-                        <rect x="202" y="118" width="6"  height="34" fill="#030010"/>
-                        <rect x="208" y="124" width="7"  height="28" fill="#020010"/>
-                        <rect x="215" y="130" width="6"  height="22" fill="#030010"/>
-                        <rect x="221" y="126" width="9"  height="26" fill="#020008"/>
-                        <!-- Window lights -->
-                        <rect x="175" y="97"  width="2" height="2" fill="rgba(255,215,55,1)"/>
-                        <rect x="175" y="103" width="2" height="2" fill="rgba(255,215,55,.85)"/>
-                        <rect x="175" y="109" width="2" height="2" fill="rgba(255,215,55,.7)"/>
-                        <rect x="175" y="115" width="2" height="2" fill="rgba(255,215,55,.55)"/>
-                        <rect x="183" y="105" width="2" height="2" fill="rgba(255,215,55,.9)"/>
-                        <rect x="183" y="113" width="2" height="2" fill="rgba(255,215,55,.7)"/>
-                        <rect x="190" y="112" width="2" height="2" fill="rgba(255,215,55,.75)"/>
-                        <rect x="196" y="116" width="2" height="2" fill="rgba(255,215,55,.65)"/>
-                        <rect x="163" y="116" width="2" height="2" fill="rgba(255,215,55,.8)"/>
-                        <rect x="158" y="121" width="2" height="2" fill="rgba(255,215,55,.6)"/>
-                        <rect x="209" y="126" width="2" height="2" fill="rgba(255,215,55,.65)"/>
-                        <rect x="222" y="128" width="2" height="2" fill="rgba(255,215,55,.6)"/>
-                        <!-- Ground reflection shimmer -->
-                        <rect x="150" y="147" width="80" height="5" fill="rgba(180,75,5,.3)"/>
-                    </g>
 
-                    <!-- Pupil centre (extra depth) -->
-                    <circle cx="190" cy="112" r="20" fill="#000"/>
+                        <!-- Deep city-night sky -->
+                        <rect x="150" y="72" width="80" height="80" fill="url(#skyGrad)"/>
+
+                        <!-- Stars / distant lights in upper sky -->
+                        <circle cx="158" cy="78"  r=".7" fill="rgba(255,250,230,.7)"/>
+                        <circle cx="168" cy="76"  r=".5" fill="rgba(255,250,230,.5)"/>
+                        <circle cx="181" cy="79"  r=".6" fill="rgba(255,250,230,.6)"/>
+                        <circle cx="196" cy="75"  r=".7" fill="rgba(255,250,230,.55)"/>
+                        <circle cx="210" cy="78"  r=".5" fill="rgba(255,250,230,.5)"/>
+                        <circle cx="221" cy="77"  r=".6" fill="rgba(255,250,230,.6)"/>
+                        <circle cx="226" cy="82"  r=".4" fill="rgba(255,250,230,.45)"/>
+
+                        <!-- Wide panoramic city — buildings span full diameter -->
+                        <!-- Far-background haze layer (lighter, recedes) -->
+                        <rect x="150" y="130" width="4"  height="22" fill="#0E0820" opacity=".55"/>
+                        <rect x="154" y="125" width="3"  height="27" fill="#0E0820" opacity=".55"/>
+                        <rect x="157" y="128" width="5"  height="24" fill="#0E0820" opacity=".55"/>
+                        <rect x="215" y="126" width="4"  height="26" fill="#0E0820" opacity=".55"/>
+                        <rect x="219" y="130" width="3"  height="22" fill="#0E0820" opacity=".55"/>
+                        <rect x="222" y="127" width="8"  height="25" fill="#0E0820" opacity=".55"/>
+
+                        <!-- Mid-ground buildings (slightly taller) -->
+                        <rect x="150" y="122" width="6"  height="30" fill="#080418"/>
+                        <rect x="156" y="118" width="5"  height="34" fill="#080418"/>
+                        <rect x="161" y="120" width="4"  height="32" fill="#06030F"/>
+                        <rect x="165" y="115" width="7"  height="37" fill="#080418"/>
+                        <rect x="172" y="123" width="4"  height="29" fill="#060310"/>
+                        <rect x="198" y="119" width="5"  height="33" fill="#080418"/>
+                        <rect x="203" y="116" width="7"  height="36" fill="#06030F"/>
+                        <rect x="210" y="120" width="5"  height="32" fill="#080418"/>
+                        <rect x="215" y="122" width="6"  height="30" fill="#060310"/>
+                        <rect x="221" y="118" width="5"  height="34" fill="#080418"/>
+                        <rect x="226" y="122" width="4"  height="30" fill="#06030F"/>
+
+                        <!-- Foreground buildings (crisp silhouettes) -->
+                        <rect x="176" y="120" width="5"  height="32" fill="#03000A"/>
+                        <rect x="181" y="114" width="4"  height="38" fill="#03000A"/>
+                        <rect x="185" y="117" width="5"  height="35" fill="#020008"/>
+                        <rect x="190" y="116" width="4"  height="36" fill="#03000A"/>
+                        <rect x="194" y="119" width="4"  height="33" fill="#020008"/>
+
+                        <!-- Horizon glow (sunset warmth at city base) -->
+                        <ellipse cx="190" cy="151" rx="40" ry="10" fill="rgba(220,85,0,.65)"/>
+                        <ellipse cx="190" cy="149" rx="32" ry="6"  fill="rgba(255,130,20,.35)"/>
+
+                        <!-- Setting sun -->
+                        <circle  cx="190" cy="143" r="5.5" fill="rgba(255,195,30,.82)"/>
+                        <circle  cx="190" cy="143" r="3"   fill="rgba(255,240,100,.95)"/>
+
+                        <!-- Building window lights (warm glow) -->
+                        <rect x="166" y="117" width="2" height="2" fill="rgba(255,215,60,.9)"/>
+                        <rect x="166" y="122" width="2" height="2" fill="rgba(255,215,60,.7)"/>
+                        <rect x="157" y="120" width="2" height="2" fill="rgba(255,215,60,.75)"/>
+                        <rect x="157" y="126" width="2" height="2" fill="rgba(255,215,60,.6)"/>
+                        <rect x="177" y="122" width="2" height="2" fill="rgba(255,215,60,.8)"/>
+                        <rect x="181" y="116" width="2" height="2" fill="rgba(255,215,60,.85)"/>
+                        <rect x="186" y="119" width="2" height="2" fill="rgba(255,215,60,.75)"/>
+                        <rect x="191" y="118" width="2" height="2" fill="rgba(255,215,60,.7)"/>
+                        <rect x="199" y="121" width="2" height="2" fill="rgba(255,215,60,.75)"/>
+                        <rect x="204" y="118" width="2" height="2" fill="rgba(255,215,60,.8)"/>
+                        <rect x="211" y="122" width="2" height="2" fill="rgba(255,215,60,.7)"/>
+                        <rect x="222" y="120" width="2" height="2" fill="rgba(255,215,60,.65)"/>
+
+                        <!-- Ground/water reflection -->
+                        <rect x="150" y="149" width="80" height="3" fill="rgba(200,80,5,.4)"/>
+
+                        <!-- ── Atmospheric veil over upper sky (darkens behind letters) ── -->
+                        <rect x="150" y="72" width="80" height="52" fill="rgba(0,0,0,.35)"/>
+
+                        <!-- Subtle golden halo behind the letters -->
+                        <ellipse cx="190" cy="103" rx="27" ry="15"
+                                 fill="rgba(180,100,5,.22)"
+                                 filter="url(#letterGlow)"/>
+
+                        <!-- ГГ — shadow/depth layer -->
+                        <text x="191.8" y="115.5"
+                              font-family="Cormorant Garamond, Georgia, serif"
+                              font-size="30" font-weight="600" font-style="italic"
+                              text-anchor="middle" letter-spacing="2"
+                              fill="rgba(0,0,0,.75)">ГГ</text>
+
+                        <!-- ГГ — main gold layer -->
+                        <text x="190" y="113.5"
+                              font-family="Cormorant Garamond, Georgia, serif"
+                              font-size="30" font-weight="600" font-style="italic"
+                              text-anchor="middle" letter-spacing="2"
+                              fill="url(#goldLG)">ГГ</text>
+
+                        <!-- ГГ — top sheen (metallic highlight) -->
+                        <text x="190" y="113.5"
+                              font-family="Cormorant Garamond, Georgia, serif"
+                              font-size="30" font-weight="600" font-style="italic"
+                              text-anchor="middle" letter-spacing="2"
+                              fill="url(#goldSheen)">ГГ</text>
+
+                    </g>
 
                     <!-- Upper eyelid cast shadow across iris (makes eye look recessed) -->
                     <rect x="118" y="42" width="144" height="54"
                           fill="rgba(0,0,0,.40)"
                           clip-path="url(#irisClip)"/>
 
-                    <!-- ── Corneal reflections (most important for "alive" feel) ──── -->
-                    <!-- Large diffuse reflection (lens glare) -->
-                    <ellipse cx="170" cy="88"  rx="16" ry="8.5"
-                             fill="rgba(255,255,255,.18)"
-                             transform="rotate(-24 170 88)"/>
-                    <!-- Bright core of reflection -->
-                    <ellipse cx="166" cy="85"  rx="6.5" ry="3.2"
-                             fill="rgba(255,255,255,.52)"
-                             transform="rotate(-24 166 85)"/>
-                    <!-- Tiny specular point (the "life" in the eye) -->
-                    <ellipse cx="163" cy="83"  rx="2.8" ry="1.6"
-                             fill="rgba(255,255,255,.88)"
-                             transform="rotate(-24 163 83)"/>
-                    <!-- Curved rim reflection (secondary glint) -->
-                    <path d="M160,83 Q174,78 188,84"
-                          stroke="rgba(255,255,255,.16)" stroke-width="2.2"
+                    <!-- ── Corneal reflections — wet glass surface ──────────── -->
+
+                    <!-- Broad diffuse glare (large light source reflection) -->
+                    <ellipse cx="170" cy="88"  rx="18" ry="9.5"
+                             fill="rgba(255,255,255,.15)"
+                             transform="rotate(-26 170 88)"/>
+                    <!-- Bright glare core -->
+                    <ellipse cx="165" cy="85"  rx="8" ry="3.8"
+                             fill="rgba(255,255,255,.48)"
+                             transform="rotate(-26 165 85)"/>
+                    <!-- Hot specular point — the "life spark" -->
+                    <ellipse cx="162" cy="83"  rx="3.2" ry="1.8"
+                             fill="rgba(255,255,255,.90)"
+                             transform="rotate(-26 162 83)"/>
+                    <!-- Tiny pure white pixel — most realistic highlight -->
+                    <ellipse cx="160" cy="82"  rx="1.2" ry=".8"
+                             fill="rgba(255,255,255,1)"
+                             transform="rotate(-26 160 82)"/>
+
+                    <!-- Curved arc reflection (window/sky streak across wet cornea) -->
+                    <path d="M157,85 Q172,78 190,83"
+                          stroke="rgba(255,255,255,.18)" stroke-width="2.5"
                           fill="none" stroke-linecap="round"/>
-                    <!-- Small lower-right secondary reflection -->
-                    <circle cx="213" cy="131" r="3" fill="rgba(255,255,255,.09)"/>
+                    <path d="M160,88 Q174,82 191,87"
+                          stroke="rgba(255,255,255,.08)" stroke-width="1.5"
+                          fill="none" stroke-linecap="round"/>
+
+                    <!-- Lower secondary reflection (opposite source) -->
+                    <ellipse cx="214" cy="133" rx="4" ry="2.2"
+                             fill="rgba(255,255,255,.10)"
+                             transform="rotate(20 214 133)"/>
+
+                    <!-- Iris wet-ring glint (thin arc on limbal ring) -->
+                    <path d="M134,88 Q160,66 188,72"
+                          stroke="rgba(255,255,255,.10)" stroke-width="1.5"
+                          fill="none" stroke-linecap="round"/>
+
+                    <!-- Micro-glint on iris texture (upper-left zone) -->
+                    <ellipse cx="155" cy="96"  rx="5" ry="2.5"
+                             fill="rgba(255,255,255,.07)"
+                             transform="rotate(-15 155 96)"/>
+                    <ellipse cx="222" cy="100" rx="4" ry="2"
+                             fill="rgba(255,255,255,.05)"
+                             transform="rotate(10 222 100)"/>
 
                 </g>
                 <!-- ═══════════════════════════════════════════════════════════ -->
